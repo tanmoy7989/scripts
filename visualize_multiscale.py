@@ -55,7 +55,7 @@ VIOL_XL_COLOR = "red"
 XL_RADIUS = 1.0
 
 
-def assembl e_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
+def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
                                       outprefix=None, chimerax=True,
                                       xl_fn=None):
     """
