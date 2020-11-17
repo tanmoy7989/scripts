@@ -213,6 +213,8 @@ def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
     s = ""
     s += "open %s\n" % (outprefix + ".pdb")
     s += "open %s\n" % rmf_fn
+    s += "hide\n"
+    s += "show cartoon\n"
     s += "color #%d %s\n" % (CHIMERAX_PDB_MODEL_NUM, STRUCT_COLOR)
     s += "color #%d %s\n" % (CHIMERAX_RMF_MODEL_NUM, UNSTRUCT_COLOR)
     s += "hide #%d\n" % CHIMERAX_RMF_MODEL_NUM
@@ -252,8 +254,7 @@ def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
             this_df = df.iloc[i]
             p1 = this_df["protein1"] ; r1 = this_df["residue1"]
             p2 = this_df["protein2"] ; r2 = this_df["residue2"]
-            #sat = this_df["sat"]
-            sat = 1
+            sat = this_df["sat"]
             xls.append((p1, r1, p2, r2, sat))
         
         # get lists of struct atomspecs
