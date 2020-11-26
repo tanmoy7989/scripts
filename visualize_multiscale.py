@@ -126,6 +126,9 @@ def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
         resrange = c.residue_range
         offset = c.pdb_offset
         
+        r0 = resrange[0] + offset
+        r1 = resrange[1] + 1 + offset
+        
         if mol not in chain_ids:
             chain_ids[mol] = string.ascii_uppercase[chain_id_count]
             chain_id_count += 1
@@ -137,8 +140,6 @@ def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
             rigid_body_models[pdb_prefix] = this_rigid_body_model
             rigid_body_residues[pdb_prefix] = this_rigid_body_residues
             
-        r0 = resrange[0] + offset
-        r1 = resrange[1] + 1 + offset
         for r in range(r0, r1):
             key = (chain_id, r)
             val = (mol, r)
@@ -156,11 +157,10 @@ def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
         rmf_coords = []
         
         residues = rigid_body_residues[pdb_prefix]
-        for (chain, pdbres), r in residues.items():
+        for (chain, pdb_res), (mol, rmf_res) in mapper.items():
+            r = residues[(chain, pdb_res)]
             pdb_coords.append(r["CA"].coord)
             pdb_atoms.extend([a for a in r.get_atoms()])
-                
-            mol, rmf_res = mapper[(chain, pdbres)]
             rmf_coords.append(rmf_ps[(mol, str(rmf_res))])        
                  
         pdb_coords = np.array(pdb_coords)
@@ -181,8 +181,8 @@ def assemble_multiscale_visualization(topology_fn, rmf_fn, pdb_dir,
     reslists = {mol: [] for mol in mols}
     for pdb_prefix, mapper in map_pdb2rmf.items():
         residues = rigid_body_residues[pdb_prefix]
-        for (chain, pdbres), r in residues.items():
-            mol, resid = mapper[(chain, pdbres)]
+        for (chain, pdb_res), (mol, rmf_res) in mapper.items():
+            r = residues[(chain, pdb_res)] ; resid = rmf_res
             new_id = (r.id[0], resid, r.id[2])
             new_resname = r.resname
             new_segid = r.segid
